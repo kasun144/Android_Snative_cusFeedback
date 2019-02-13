@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Customer Feedback</string>
+
+    <string name="nameerror">Enter a valid name</string>
+    <string name="emailerror">Enter a valid email</string>
+    <string name="mobileerror">Enter a valid mobile</string>
+
+
+    <array name="departments">
+        <item>Matale</item>
+        <item>Kandy</item>
+        <item>Colombo</item>
+    </array>
+
+</resources>
+
+
+
