@@ -130,30 +130,36 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
      * */
     private void saveNameToServer() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Saving...");
-        progressDialog.show();
-
-        Intent intent = new Intent(DMainActivity.this,RMainActivity.class);
-        startActivity(intent);
 
         //editTextName
         final String name = editTextName.getText().toString().trim();
         final String email = editTextEmail.getText().toString().trim();
         final String contactno = editTextNumber.getText().toString().trim();
 
-        if (name.isEmpty()) {
-            editTextName.setError("Please enter your Name");
+
+
+        if (name.isEmpty()|| name.length() < 3){
+            editTextName.setError("Please Enter Your Name");
             editTextName.requestFocus();
+
         }
 
-        if (contactno.isEmpty()) {
-            editTextNumber.setError("Please enter your Phone Number");
+        if(contactno.isEmpty()|| contactno.length()!=10){
+            editTextNumber.setError("Enter Valid Mobile Number");
             editTextNumber.requestFocus();
 
         }
-        if (email.isEmpty()) {
-            editTextEmail.setError("Please enter your E-mail");
+        if(email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editTextEmail.setError("Enter A Valid Email Address");
             editTextEmail.requestFocus();
+        }
+        else{
+            //final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Saving...");
+            progressDialog.show();
+
+            Intent intent = new Intent(DMainActivity.this,RMainActivity.class);
+            startActivity(intent);
 
         }
 
@@ -218,6 +224,8 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
+
+
 
 
         saveNameToServer();

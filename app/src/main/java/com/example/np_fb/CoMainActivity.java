@@ -132,7 +132,7 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
         progressDialog.setMessage("Saving...");
         progressDialog.show();
 
-        Intent intent = new Intent(CoMainActivity.this,SMainActivity.class);
+        Intent intent = new Intent(CoMainActivity.this,SplashScreen.class);
         startActivity(intent);
 
 

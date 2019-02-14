@@ -8,8 +8,10 @@
 
     <array name="departments">
         <item>Matale</item>
-        <item>Kandy</item>
+        <item>Pannala</item>
         <item>Colombo</item>
+        <item>Pepiliyana</item>
+        <item>Peliyagoda</item>
     </array>
 
 </resources>

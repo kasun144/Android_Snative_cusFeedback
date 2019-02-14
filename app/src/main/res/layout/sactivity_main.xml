@@ -24,6 +24,15 @@
         android:background="@color/bg_login"
         android:paddingBottom="15dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:text="Select branch"
+            android:textAlignment="center"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+
+
         <Spinner
             android:id="@+id/editSpinnerLocation"
             android:layout_width="match_parent"
