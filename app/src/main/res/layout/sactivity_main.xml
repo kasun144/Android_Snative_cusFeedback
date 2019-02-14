@@ -15,7 +15,7 @@
 
     <LinearLayout
         android:layout_width="370dp"
-        android:layout_height="176dp"
+        android:layout_height="206dp"
         android:layout_centerVertical="true"
         android:orientation="vertical"
         android:paddingLeft="15dp"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="1dp"
-            android:text="Select branch"
+            android:text="Select Branch"
             android:textAlignment="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
@@ -37,16 +37,17 @@
             android:id="@+id/editSpinnerLocation"
             android:layout_width="match_parent"
             android:layout_height="71dp"
-
             android:entries="@array/departments"
             android:gravity="center" />
 
 
         <Button
             android:id="@+id/buttonSave"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
+            android:layout_margin="10dp"
             android:text="Save" />
 
     </LinearLayout>
