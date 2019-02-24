@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".SplashScreen">
+        <activity android:name=".R3MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,6 +25,7 @@
         <activity android:name=".RMainActivity"></activity>
         <activity android:name=".CoMainActivity"></activity>
         <activity android:name=".SMainActivity"></activity>
+        <activity android:name=".SplashScreen"></activity>
 
 
 

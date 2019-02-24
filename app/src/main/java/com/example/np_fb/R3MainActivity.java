@@ -1,5 +1,6 @@
 package com.example.np_fb;
 
+
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,8 +12,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -27,56 +30,104 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CoMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class R3MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /*
-     * this is the url to our webservice
-     * make sure you are using the ip instead of localhost
-     * it will not work if you are using localhost
-     * */
-    public static final String URL_SAVE_NAME = "http://192.168.1.4/REAL/comment.php";
+    //ipv4 local host address
+    public static final String URL_SAVE_NAME = "http://192.168.1.4/real/rate3.php";
 
     //database helper object
-    private CoDatabaseHelper db;
+    private R3DatabaseHelper db;
 
     //View objects
     private Button buttonSave;
-    private EditText editTextName;
+    private TextView text1,text2,text3;
+    private RatingBar rating1,rating2,rating3;
+
+
+
+    // private EditText editTextEmail;
+
     private ListView listViewNames;
 
     //List to store all the names
-    private List<CoName> names;
+    private List<R3Name> names;
 
     //1 means data is synced and 0 means data is not synced
     public static final int NAME_SYNCED_WITH_SERVER = 1;
     public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
 
-    //a broadcast to know weather the data is synced or not
+
     public static final String DATA_SAVED_BROADCAST = "net.simplifiedcoding.datasaved";
+
+
+
 
     //Broadcast receiver to know the sync status
     private BroadcastReceiver broadcastReceiver;
 
     //adapterobject for list view
-    private CoNameAdapter nameAdapter;
+    private R3NameAdapter nameAdapter;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.coactivity_main);
+        setContentView(R.layout.r3activity_main);
 
-        registerReceiver(new CoNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(new R3NetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         //initializing views and objects
-        db = new CoDatabaseHelper(this);
+        db = new R3DatabaseHelper(this);
         names = new ArrayList<>();
 
         buttonSave = findViewById(R.id.buttonSave);
-        editTextName = findViewById(R.id.editTextName);
+        //editTextName = findViewById(R.id.editTextName);
+       // editTextEmail= findViewById(R.id.editTextEmail);
+       // editTextNumber = findViewById(R.id.editTextNumber);
         listViewNames = findViewById(R.id.listViewNames);
+        rating1 = findViewById(R.id.ratingBar1);
+        rating2 = findViewById(R.id.ratingBar2);
+        rating3= findViewById(R.id.ratingBar3);
+
+        text1 = findViewById(R.id.textView1);
+        text2 = findViewById(R.id.textView2);
+        text3 = findViewById(R.id.textView3);
 
         //adding click listener to button
         buttonSave.setOnClickListener(this);
+
+        rating1.setOnRatingBarChangeListener(
+                new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        text1.setText(String.valueOf(rating));
+                    }
+                }
+        );
+
+        rating2.setOnRatingBarChangeListener(
+                new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        text2.setText(String.valueOf(rating));
+                    }
+                }
+        );
+
+        rating3.setOnRatingBarChangeListener(
+                new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        text3.setText(String.valueOf(rating));
+                    }
+                }
+        );
+
+
+
+
 
         //calling the method to load all the stored names
         loadNames();
@@ -105,15 +156,17 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
         Cursor cursor = db.getNames();
         if (cursor.moveToFirst()) {
             do {
-                CoName name = new CoName(
-                        cursor.getString(cursor.getColumnIndex(CoDatabaseHelper.COLUMN_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(CoDatabaseHelper.COLUMN_STATUS))
+                R3Name name = new R3Name(
+                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_NAME)),
+                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_EMAIL)),
+                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_CONTACTNO)),
+                        cursor.getInt(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_STATUS))
                 );
                 names.add(name);
             } while (cursor.moveToNext());
         }
 
-        nameAdapter = new CoNameAdapter(this, R.layout.conames, names);
+        nameAdapter = new R3NameAdapter(this, R.layout.r3names, names);
         listViewNames.setAdapter(nameAdapter);
     }
 
@@ -127,16 +180,22 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
     /*
      * this method is saving the name to ther server
      * */
-    private void saveNameToServer() {
+    private boolean saveNameToServer() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Saving...");
         progressDialog.show();
 
-        Intent intent = new Intent(CoMainActivity.this,R3MainActivity.class);
+        Intent intent = new Intent(R3MainActivity.this,SplashScreen.class);
         startActivity(intent);
 
 
-        final String name = editTextName.getText().toString().trim();
+        //editTextName
+        final String name = text1.getText().toString().trim();
+        final String email = text2.getText().toString().trim();
+        final String contactno = text3.getText().toString().trim();
+
+
+
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SAVE_NAME,
                 new Response.Listener<String>() {
@@ -148,11 +207,11 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
                             if (!obj.getBoolean("error")) {
                                 //if there is a success
                                 //storing the name to sqlite with status synced
-                                saveNameToLocalStorage(name, NAME_SYNCED_WITH_SERVER);
+                                saveNameToLocalStorage(name,email,contactno, NAME_SYNCED_WITH_SERVER);
                             } else {
                                 //if there is some error
                                 //saving the name to sqlite with status unsynced
-                                saveNameToLocalStorage(name, NAME_NOT_SYNCED_WITH_SERVER);
+                                saveNameToLocalStorage(name,email,contactno, NAME_NOT_SYNCED_WITH_SERVER);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -164,31 +223,43 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
                         //on error storing the name to sqlite with status unsynced
-                        saveNameToLocalStorage(name, NAME_NOT_SYNCED_WITH_SERVER);
+                        saveNameToLocalStorage(name,email,contactno,NAME_NOT_SYNCED_WITH_SERVER);
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("name", name);
+                params.put("email", email);
+                params.put("contactno", contactno);
+
+
                 return params;
             }
         };
 
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        return false;
     }
 
     //saving the name to local storage
-    private void saveNameToLocalStorage(String name, int status) {
-        editTextName.setText("");
-        db.addName(name, status);
-        CoName n = new CoName(name, status);
+    private void saveNameToLocalStorage(String name,String email,String contactno, int status) {
+        text1.setText("");
+        text2.setText("");
+        text3.setText("");
+
+
+        db.addName(name,email,contactno,status);
+        R3Name n = new R3Name(name,email,contactno,status);
         names.add(n);
         refreshList();
     }
 
     @Override
     public void onClick(View view) {
+
+
         saveNameToServer();
+
     }
 }
