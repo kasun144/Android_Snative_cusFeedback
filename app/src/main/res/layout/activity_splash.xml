@@ -2,25 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/q">
+    android:background="@color/bg_login">
 
 
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="67dp"
-        android:layout_height="83dp"
+        android:layout_width="267dp"
+        android:layout_height="183dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/success" />
+        android:src="@drawable/Picture1"/>
+    <TextView
+        android:layout_width="267dp"
+        android:layout_height="186dp"
+        android:layout_centerInParent="true"
+        android:text="Help us serve you better"
+        android:gravity="bottom"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:textSize="12dp"
-        android:textColor="#454545"
-        android:gravity="center_horizontal"
         android:layout_alignParentBottom="true"
-        android:text="www.testing.lk" />
+        android:layout_marginBottom="11dp"
+        android:gravity="center_horizontal"
+        android:text="www.Noritake.lk"
+        android:textColor="#454545"
+        android:textSize="12dp" />
 
 </RelativeLayout>
 
