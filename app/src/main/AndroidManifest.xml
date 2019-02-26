@@ -26,6 +26,7 @@
         <activity android:name=".CoMainActivity"></activity>
         <activity android:name=".SMainActivity"></activity>
         <activity android:name=".SplashScreen"></activity>
+        <activity android:name=".ButtMainActivity"></activity>
 
 
 
