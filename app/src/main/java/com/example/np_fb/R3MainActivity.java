@@ -33,7 +33,7 @@ import java.util.Map;
 public class R3MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.1.4/real/rate3.php";
+    public static final String URL_SAVE_NAME = "http://192.168.1.5/real/rate3.php";
 
     //database helper object
     private R3DatabaseHelper db;

@@ -7,10 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
 
 public class TenMainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,7 +37,7 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
     private RatingBar rating;
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.1.4/REAL/tenrate.php";
+    public static final String URL_SAVE_NAME = "http://192.168.1.5/REAL/tenrate.php";
 
     //database helper object
     private TenDatabaseHelper db;
@@ -155,6 +157,7 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
 
         Intent intent = new Intent(TenMainActivity.this,CotwoMainActivity.class);
         startActivity(intent);
+
 
         final String name = text.getText().toString().trim();
 

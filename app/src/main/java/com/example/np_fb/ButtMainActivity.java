@@ -35,7 +35,7 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
      * make sure you are using the ip instead of localhost
      * it will not work if you are using localhost
      * */
-    public static final String URL_SAVE_NAME = "http://192.168.1.4/real/radio.php";
+    public static final String URL_SAVE_NAME = "http://192.168.1.5/real/radio.php";
 
     //database helper object
     private ButtDatabaseHelper db;
