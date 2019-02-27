@@ -28,6 +28,8 @@
         <activity android:name=".R3MainActivity"></activity>
         <activity android:name=".ButtMainActivity"></activity>
         <activity android:name=".TenMainActivity"></activity>
+        <activity android:name=".CotwoMainActivity"></activity>
+       
 
 
 

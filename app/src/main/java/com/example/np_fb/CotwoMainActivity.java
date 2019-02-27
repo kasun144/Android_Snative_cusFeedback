@@ -11,11 +11,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,75 +27,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TenMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class CotwoMainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView text;
-    private RatingBar rating;
-
-    //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.1.4/REAL/tenrate.php";
+    /*
+     * this is the url to our webservice
+     * make sure you are using the ip instead of localhost
+     * it will not work if you are using localhost
+     * */
+    public static final String URL_SAVE_NAME = "http://192.168.1.4/REAL/commentsecond.php";
 
     //database helper object
-    private TenDatabaseHelper db;
+    private CotwoDatabaseHelper db;
 
     //View objects
     private Button buttonSave;
-    private TextView editTextName;
+    private EditText editTextName;
     private ListView listViewNames;
 
     //List to store all the names
-    private List<TenName> names;
+    private List<CotwoName> names;
 
     //1 means data is synced and 0 means data is not synced
     public static final int NAME_SYNCED_WITH_SERVER = 1;
     public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
 
-
+    //a broadcast to know weather the data is synced or not
     public static final String DATA_SAVED_BROADCAST = "net.simplifiedcoding.datasaved";
-
-
-
 
     //Broadcast receiver to know the sync status
     private BroadcastReceiver broadcastReceiver;
 
     //adapterobject for list view
-    private TenNameAdapter nameAdapter;
-
-
-
+    private CotwoNameAdapter nameAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tenactivity_main);
+        setContentView(R.layout.cotwoactivity_main);
 
-
-
-
-        registerReceiver(new TenNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(new CotwoNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         //initializing views and objects
-        db = new TenDatabaseHelper(this);
+        db = new CotwoDatabaseHelper(this);
         names = new ArrayList<>();
 
-        buttonSave = (Button) findViewById(R.id.buttonSave);
-        editTextName = (TextView) findViewById(R.id.editTextName);
-        listViewNames = (ListView) findViewById(R.id.listViewNames);
-        rating = (RatingBar) findViewById(R.id.ratingBar);
-        text = (TextView)findViewById(R.id.textView);
+        buttonSave = findViewById(R.id.buttonSave);
+        editTextName = findViewById(R.id.editTextName);
+        listViewNames = findViewById(R.id.listViewNames);
 
         //adding click listener to button
         buttonSave.setOnClickListener(this);
-
-        rating.setOnRatingBarChangeListener(
-                new RatingBar.OnRatingBarChangeListener() {
-                    @Override
-                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                        text.setText(String.valueOf(rating));
-                    }
-                }
-        );
 
         //calling the method to load all the stored names
         loadNames();
@@ -126,15 +105,15 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
         Cursor cursor = db.getNames();
         if (cursor.moveToFirst()) {
             do {
-                TenName name = new TenName(
-                        cursor.getString(cursor.getColumnIndex(TenDatabaseHelper.COLUMN_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(TenDatabaseHelper.COLUMN_STATUS))
+                CotwoName name = new CotwoName(
+                        cursor.getString(cursor.getColumnIndex(CotwoDatabaseHelper.COLUMN_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(CotwoDatabaseHelper.COLUMN_STATUS))
                 );
                 names.add(name);
             } while (cursor.moveToNext());
         }
 
-        nameAdapter = new TenNameAdapter(this, R.layout.tennames, names);
+        nameAdapter = new CotwoNameAdapter(this, R.layout.cotwonames, names);
         listViewNames.setAdapter(nameAdapter);
     }
 
@@ -153,10 +132,10 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
         progressDialog.setMessage("Saving...");
         progressDialog.show();
 
-        Intent intent = new Intent(TenMainActivity.this,CotwoMainActivity.class);
+        Intent intent = new Intent(CotwoMainActivity.this,DMainActivity.class);
         startActivity(intent);
 
-        final String name = text.getText().toString().trim();
+        final String name = editTextName.getText().toString().trim();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SAVE_NAME,
                 new Response.Listener<String>() {
@@ -188,7 +167,7 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("name", name);
                 return params;
@@ -200,9 +179,9 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
 
     //saving the name to local storage
     private void saveNameToLocalStorage(String name, int status) {
-        text.setText("");
+        editTextName.setText("");
         db.addName(name, status);
-        TenName n = new TenName(name, status);
+        CotwoName n = new CotwoName(name, status);
         names.add(n);
         refreshList();
     }
