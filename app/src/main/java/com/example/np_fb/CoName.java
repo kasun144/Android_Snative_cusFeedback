@@ -1,8 +1,5 @@
 package com.example.np_fb;
 
-/**
- * Created by Belal on 1/27/2017.
- */
 
 public class CoName {
     private String name;
