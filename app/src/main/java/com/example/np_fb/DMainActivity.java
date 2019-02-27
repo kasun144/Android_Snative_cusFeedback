@@ -144,7 +144,8 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-        if(contactno.isEmpty()|| contactno.length()!=15){
+        // if(contactno.isEmpty()|| contactno.length()!=15){
+        if(contactno.isEmpty()){
             editTextNumber.setError("Enter Valid Mobile Number");
             editTextNumber.requestFocus();
 
