@@ -140,7 +140,7 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
      * */
     private void saveNameToServer() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Saving Name...");
+        progressDialog.setMessage("Saving...");
         progressDialog.show();
 
 
@@ -207,12 +207,14 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
         switch (view.getId()) {
             case R.id.button1:
                 responseText.setText("Yes");
+                saveNameToServer();
                 break;
             case R.id.button2:
                 responseText.setText("No");
-                break;
-            case R.id.buttonSave:
                 saveNameToServer();
+                break;
+           /* case R.id.buttonSave:
+                saveNameToServer();*/
         }
     }
 }

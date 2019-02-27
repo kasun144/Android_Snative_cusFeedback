@@ -103,7 +103,8 @@
             android:layout_width="137dp"
             android:layout_height="59dp"
             android:layout_gravity="center"
-            android:text="Save" />
+            android:text="Save"
+            android:visibility="gone"/>
 
 
         <ListView
