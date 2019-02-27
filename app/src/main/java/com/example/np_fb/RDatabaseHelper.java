@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by Bela  l on 1/27/2017.
- */
 public class RDatabaseHelper extends SQLiteOpenHelper {
 
     //Constants for Database name, table name, and column names
