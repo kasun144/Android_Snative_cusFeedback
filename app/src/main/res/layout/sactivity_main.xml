@@ -33,7 +33,7 @@
             android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:src="@drawable/Picture1" />
+            android:src="@drawable/picture1" />
 
         <TextView
             android:layout_width="match_parent"

@@ -185,7 +185,7 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
         progressDialog.setMessage("Saving...");
         progressDialog.show();
 
-        Intent intent = new Intent(R3MainActivity.this,SplashScreen.class);
+        Intent intent = new Intent(R3MainActivity.this,TenMainActivity.class);
         startActivity(intent);
 
 

@@ -32,13 +32,13 @@
             android:layout_height="75dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:src="@drawable/Picture1" />
+            android:src="@drawable/picture1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:text="Name of our staff who served you"
+            android:text="Name of our staff who served you.."
             android:textAlignment="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 

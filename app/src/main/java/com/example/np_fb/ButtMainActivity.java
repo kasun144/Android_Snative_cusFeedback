@@ -144,6 +144,9 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
         progressDialog.show();
 
 
+        Intent intent = new Intent(ButtMainActivity.this,RMainActivity.class);
+        startActivity(intent);
+
         final String name = editTextName.getText().toString().trim();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SAVE_NAME,

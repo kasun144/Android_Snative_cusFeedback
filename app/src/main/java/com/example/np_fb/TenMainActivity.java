@@ -12,7 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -28,22 +29,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class TenMainActivity extends AppCompatActivity implements View.OnClickListener {
 
-//ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.1.4/REAL/location.php";
+    private TextView text;
+    private RatingBar rating;
+
+    //ipv4 local host address
+    public static final String URL_SAVE_NAME = "http://192.168.1.4/REAL/tenrate.php";
 
     //database helper object
-    private SDatabaseHelper db;
+    private TenDatabaseHelper db;
 
     //View objects
     private Button buttonSave;
-  //  private EditText editTextName;
-    private Spinner editSpinnerLocation;
+    private TextView editTextName;
     private ListView listViewNames;
 
     //List to store all the names
-    private List<SName> names;
+    private List<TenName> names;
 
     //1 means data is synced and 0 means data is not synced
     public static final int NAME_SYNCED_WITH_SERVER = 1;
@@ -59,7 +62,7 @@ public class SMainActivity extends AppCompatActivity implements View.OnClickList
     private BroadcastReceiver broadcastReceiver;
 
     //adapterobject for list view
-    private SNameAdapter snameAdapter;
+    private TenNameAdapter nameAdapter;
 
 
 
@@ -67,21 +70,34 @@ public class SMainActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sactivity_main);
+        setContentView(R.layout.tenactivity_main);
 
-        registerReceiver(new SNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+
+
+        registerReceiver(new TenNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         //initializing views and objects
-        db = new SDatabaseHelper(this);
+        db = new TenDatabaseHelper(this);
         names = new ArrayList<>();
 
         buttonSave = (Button) findViewById(R.id.buttonSave);
-      //  editTextName = (EditText) findViewById(R.id.editTextName);
-        editSpinnerLocation = ( Spinner) findViewById(R.id.editSpinnerLocation);
+        editTextName = (TextView) findViewById(R.id.editTextName);
         listViewNames = (ListView) findViewById(R.id.listViewNames);
+        rating = (RatingBar) findViewById(R.id.ratingBar);
+        text = (TextView)findViewById(R.id.textView);
 
         //adding click listener to button
         buttonSave.setOnClickListener(this);
+
+        rating.setOnRatingBarChangeListener(
+                new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                        text.setText(String.valueOf(rating));
+                    }
+                }
+        );
 
         //calling the method to load all the stored names
         loadNames();
@@ -110,23 +126,23 @@ public class SMainActivity extends AppCompatActivity implements View.OnClickList
         Cursor cursor = db.getNames();
         if (cursor.moveToFirst()) {
             do {
-                SName name = new SName(
-                        cursor.getString(cursor.getColumnIndex(SDatabaseHelper.COLUMN_NAME)),
-                        cursor.getInt(cursor.getColumnIndex(SDatabaseHelper.COLUMN_STATUS))
+                TenName name = new TenName(
+                        cursor.getString(cursor.getColumnIndex(TenDatabaseHelper.COLUMN_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(TenDatabaseHelper.COLUMN_STATUS))
                 );
                 names.add(name);
             } while (cursor.moveToNext());
         }
 
-        snameAdapter = new SNameAdapter(this, R.layout.snames, names);
-        listViewNames.setAdapter(snameAdapter);
+        nameAdapter = new TenNameAdapter(this, R.layout.tennames, names);
+        listViewNames.setAdapter(nameAdapter);
     }
 
     /*
      * this method will simply refresh the list
      * */
     private void refreshList() {
-        snameAdapter.notifyDataSetChanged();
+        nameAdapter.notifyDataSetChanged();
     }
 
     /*
@@ -137,11 +153,10 @@ public class SMainActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.setMessage("Saving...");
         progressDialog.show();
 
-        Intent intent = new Intent(SMainActivity.this,ButtMainActivity.class);
+        Intent intent = new Intent(TenMainActivity.this,SplashScreen.class);
         startActivity(intent);
 
-       // final String name = editTextName.getText().toString().trim();
-        final String name = editSpinnerLocation.getSelectedItem().toString().trim();
+        final String name = text.getText().toString().trim();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SAVE_NAME,
                 new Response.Listener<String>() {
@@ -185,10 +200,9 @@ public class SMainActivity extends AppCompatActivity implements View.OnClickList
 
     //saving the name to local storage
     private void saveNameToLocalStorage(String name, int status) {
-      //  editTextName.setText("");
-
+        text.setText("");
         db.addName(name, status);
-        SName n = new SName(name, status);
+        TenName n = new TenName(name, status);
         names.add(n);
         refreshList();
     }
