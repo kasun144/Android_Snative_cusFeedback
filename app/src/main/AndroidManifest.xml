@@ -29,7 +29,8 @@
         <activity android:name=".ButtMainActivity"></activity>
         <activity android:name=".TenMainActivity"></activity>
         <activity android:name=".CotwoMainActivity"></activity>
-       
+        <activity android:name=".finalSplashScreen"></activity>
+
 
 
 

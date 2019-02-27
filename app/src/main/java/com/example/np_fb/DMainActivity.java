@@ -158,7 +158,7 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
             progressDialog.setMessage("Saving...");
             progressDialog.show();
 
-            Intent intent = new Intent(DMainActivity.this,RMainActivity.class);
+            Intent intent = new Intent(DMainActivity.this,finalSplashScreen.class);
             startActivity(intent);
 
         }
