@@ -35,7 +35,7 @@ public class RMainActivity extends AppCompatActivity implements View.OnClickList
     private RatingBar rating;
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.1.5/REAL/rate.php";
+    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/rate.php";
 
     //database helper object
     private RDatabaseHelper db;

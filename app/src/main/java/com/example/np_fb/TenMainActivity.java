@@ -37,7 +37,7 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
     private RatingBar rating;
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.1.5/REAL/tenrate.php";
+    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/tenrate.php";
 
     //database helper object
     private TenDatabaseHelper db;

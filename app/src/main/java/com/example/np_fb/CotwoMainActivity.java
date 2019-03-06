@@ -34,7 +34,7 @@ public class CotwoMainActivity extends AppCompatActivity implements View.OnClick
      * make sure you are using the ip instead of localhost
      * it will not work if you are using localhost
      * */
-    public static final String URL_SAVE_NAME = "http://192.168.1.5/REAL/commentsecond.php";
+    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/commentsecond.php";
 
     //database helper object
     private CotwoDatabaseHelper db;

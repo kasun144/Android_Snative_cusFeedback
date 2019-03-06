@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import static java.lang.System.exit;
+
 public class finalSplashScreen extends Activity {
 
     // Splash screen timer
@@ -22,13 +24,17 @@ public class finalSplashScreen extends Activity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                Intent i = new Intent(finalSplashScreen.this,ButtMainActivity.class);
+              /*  Intent i = new Intent(finalSplashScreen.this,finalSplashScreen.class);
                 startActivity(i);
-
+*/
                 // close this activity
                 finish();
+
             }
         }, SPLASH_TIME_OUT);
+
+
+
     }
 }
 
