@@ -28,7 +28,7 @@ public class finalSplashScreen extends Activity {
                 startActivity(i);
 */
                 // close this activity
-                finish();
+                //finish();
 
             }
         }, SPLASH_TIME_OUT);
