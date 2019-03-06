@@ -104,7 +104,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:baselineAligned="false"
-            android:text="Save" />
+            android:text="Next" />
 
     </LinearLayout>
 
