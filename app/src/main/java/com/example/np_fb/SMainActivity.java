@@ -31,7 +31,7 @@ import java.util.Map;
 public class SMainActivity extends AppCompatActivity implements View.OnClickListener {
 
 //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.42.13/REAL/location.php";
+    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/location.php";
 
     //database helper object
     private SDatabaseHelper db;

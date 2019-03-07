@@ -13,8 +13,7 @@
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"
-            android:background="@mipmap/ic_launcher_round"
-            android:text="Home" />
+            android:background="@android:drawable/ic_menu_rotate" />
 
     </LinearLayout>
 
