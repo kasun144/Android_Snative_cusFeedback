@@ -36,6 +36,7 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
      * it will not work if you are using localhost
      * */
     public static final String URL_SAVE_NAME = "http://220.247.222.131/real/radio.php";
+  //  public static final String URL_SAVE_NAME = "http://192.168.1.4/Real/radio.php";
 
     //database helper object
     private ButtDatabaseHelper db;
@@ -147,7 +148,7 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = new Intent(ButtMainActivity.this,RMainActivity.class);
         startActivity(intent);
 
-        final String name = editTextName.getText().toString().trim();
+        final String red = editTextName.getText().toString().trim();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SAVE_NAME,
                 new Response.Listener<String>() {
@@ -159,11 +160,11 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
                             if (!obj.getBoolean("error")) {
                                 //if there is a success
                                 //storing the name to sqlite with status synced
-                                saveNameToLocalStorage(name, NAME_SYNCED_WITH_SERVER);
+                                saveNameToLocalStorage(red, NAME_SYNCED_WITH_SERVER);
                             } else {
                                 //if there is some error
                                 //saving the name to sqlite with status unsynced
-                                saveNameToLocalStorage(name, NAME_NOT_SYNCED_WITH_SERVER);
+                                saveNameToLocalStorage(red, NAME_NOT_SYNCED_WITH_SERVER);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -175,13 +176,13 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
                         //on error storing the name to sqlite with status unsynced
-                        saveNameToLocalStorage(name, NAME_NOT_SYNCED_WITH_SERVER);
+                        saveNameToLocalStorage(red, NAME_NOT_SYNCED_WITH_SERVER);
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("name", name);
+                params.put("red", red);
                 return params;
             }
         };
