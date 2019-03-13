@@ -35,6 +35,7 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
      * it will not work if you are using localhost
      * */
     public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/comment.php";
+    //public static final String URL_SAVE_NAME = "http://172.30.6.87/REAL/comment.php";
 
     //database helper object
     private CoDatabaseHelper db;

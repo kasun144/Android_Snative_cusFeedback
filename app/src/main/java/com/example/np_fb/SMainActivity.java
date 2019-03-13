@@ -32,6 +32,7 @@ public class SMainActivity extends AppCompatActivity implements View.OnClickList
 
 //ipv4 local host address
     public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/location.php";
+   // public static final String URL_SAVE_NAME = "http://172.30.6.87/REAL/location.php";
 
     //database helper object
     private SDatabaseHelper db;
