@@ -37,14 +37,37 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
     private RatingBar rating;
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.10.100/REAL/tenrate.php";
+    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/tenrate.php";
     //public static final String URL_SAVE_NAME = "http://172.30.6.87/REAL/tenrate.php";
 
+    //database helper object
+    private TenDatabaseHelper db;
 
     //View objects
     private Button buttonSave;
     private TextView editTextName;
     private ListView listViewNames;
+
+    //List to store all the names
+    private List<TenName> names;
+
+    //1 means data is synced and 0 means data is not synced
+    public static final int NAME_SYNCED_WITH_SERVER = 1;
+    public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
+
+
+    public static final String DATA_SAVED_BROADCAST = "net.simplifiedcoding.datasaved";
+
+
+
+
+    //Broadcast receiver to know the sync status
+    private BroadcastReceiver broadcastReceiver;
+
+    //adapterobject for list view
+    private TenNameAdapter nameAdapter;
+
+
 
 
     @Override
@@ -53,6 +76,13 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.tenactivity_main);
 
 
+
+
+        registerReceiver(new TenNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        //initializing views and objects
+        db = new TenDatabaseHelper(this);
+        names = new ArrayList<>();
 
         buttonSave = (Button) findViewById(R.id.buttonSave);
         editTextName = (TextView) findViewById(R.id.editTextName);
@@ -72,10 +102,55 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
                 }
         );
 
+        //calling the method to load all the stored names
+        loadNames();
 
+        //the broadcast receiver to update sync status
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                //loading the names again
+                loadNames();
+            }
+        };
+
+        //registering the broadcast receiver to update sync status
+        registerReceiver(broadcastReceiver, new IntentFilter(DATA_SAVED_BROADCAST));
     }
 
+    /*
+     * this method will
+     * load the names from the database
+     * with updated sync status
+     * */
+    private void loadNames() {
+        names.clear();
+        Cursor cursor = db.getNames();
+        if (cursor.moveToFirst()) {
+            do {
+                TenName name = new TenName(
+                        cursor.getString(cursor.getColumnIndex(TenDatabaseHelper.COLUMN_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(TenDatabaseHelper.COLUMN_STATUS))
+                );
+                names.add(name);
+            } while (cursor.moveToNext());
+        }
 
+        nameAdapter = new TenNameAdapter(this, R.layout.tennames, names);
+        listViewNames.setAdapter(nameAdapter);
+    }
+
+    /*
+     * this method will simply refresh the list
+     * */
+    private void refreshList() {
+        nameAdapter.notifyDataSetChanged();
+    }
+
+    /*
+     * this method is saving the name to ther server
+     * */
     private void saveNameToServer() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Saving...");
@@ -97,11 +172,11 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
                             if (!obj.getBoolean("error")) {
                                 //if there is a success
                                 //storing the name to sqlite with status synced
-
+                                saveNameToLocalStorage(name, NAME_SYNCED_WITH_SERVER);
                             } else {
                                 //if there is some error
                                 //saving the name to sqlite with status unsynced
-
+                                saveNameToLocalStorage(name, NAME_NOT_SYNCED_WITH_SERVER);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -112,6 +187,8 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
+                        //on error storing the name to sqlite with status unsynced
+                        saveNameToLocalStorage(name, NAME_NOT_SYNCED_WITH_SERVER);
                     }
                 }) {
             @Override
@@ -125,6 +202,14 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
+    //saving the name to local storage
+    private void saveNameToLocalStorage(String name, int status) {
+        text.setText("");
+        db.addName(name, status);
+        TenName n = new TenName(name, status);
+        names.add(n);
+        refreshList();
+    }
 
     @Override
     public void onClick(View view) {
