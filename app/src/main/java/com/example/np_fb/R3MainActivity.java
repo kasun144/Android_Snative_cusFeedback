@@ -33,11 +33,10 @@ import java.util.Map;
 public class R3MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/rate3.php";
+    public static final String URL_SAVE_NAME = "http://192.168.10.100/REAL/rate3.php";
    // public static final String URL_SAVE_NAME = "http://172.30.6.87/real/rate3.php";
 
-    //database helper object
-    private R3DatabaseHelper db;
+
 
     //View objects
     private Button buttonSave;
@@ -51,23 +50,9 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
     private ListView listViewNames;
 
     //List to store all the names
-    private List<R3Name> names;
-
-    //1 means data is synced and 0 means data is not synced
-    public static final int NAME_SYNCED_WITH_SERVER = 1;
-    public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
-
-
-    public static final String DATA_SAVED_BROADCAST = "net.simplifiedcoding.datasaved";
 
 
 
-
-    //Broadcast receiver to know the sync status
-    private BroadcastReceiver broadcastReceiver;
-
-    //adapterobject for list view
-    private R3NameAdapter nameAdapter;
 
 
 
@@ -77,11 +62,7 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.r3activity_main);
 
-        registerReceiver(new R3NetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        //initializing views and objects
-        db = new R3DatabaseHelper(this);
-        names = new ArrayList<>();
 
         buttonSave = findViewById(R.id.buttonSave);
         //editTextName = findViewById(R.id.editTextName);
@@ -126,61 +107,9 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
                 }
         );
 
-
-
-
-
-        //calling the method to load all the stored names
-        loadNames();
-
-        //the broadcast receiver to update sync status
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                //loading the names again
-                loadNames();
-            }
-        };
-
-        //registering the broadcast receiver to update sync status
-        registerReceiver(broadcastReceiver, new IntentFilter(DATA_SAVED_BROADCAST));
     }
 
-    /*
-     * this method will
-     * load the names from the database
-     * with updated sync status
-     * */
-    private void loadNames() {
-        names.clear();
-        Cursor cursor = db.getNames();
-        if (cursor.moveToFirst()) {
-            do {
-                R3Name name = new R3Name(
-                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_NAME)),
-                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_EMAIL)),
-                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_CONTACTNO)),
-                        cursor.getInt(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_STATUS))
-                );
-                names.add(name);
-            } while (cursor.moveToNext());
-        }
 
-        nameAdapter = new R3NameAdapter(this, R.layout.r3names, names);
-        listViewNames.setAdapter(nameAdapter);
-    }
-
-    /*
-     * this method will simply refresh the list
-     * */
-    private void refreshList() {
-        nameAdapter.notifyDataSetChanged();
-    }
-
-    /*
-     * this method is saving the name to ther server
-     * */
     private boolean saveNameToServer() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Saving...");
@@ -208,11 +137,11 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
                             if (!obj.getBoolean("error")) {
                                 //if there is a success
                                 //storing the name to sqlite with status synced
-                                saveNameToLocalStorage(name,email,contactno, NAME_SYNCED_WITH_SERVER);
+
                             } else {
                                 //if there is some error
                                 //saving the name to sqlite with status unsynced
-                                saveNameToLocalStorage(name,email,contactno, NAME_NOT_SYNCED_WITH_SERVER);
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -224,7 +153,6 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
                         //on error storing the name to sqlite with status unsynced
-                        saveNameToLocalStorage(name,email,contactno,NAME_NOT_SYNCED_WITH_SERVER);
                     }
                 }) {
             @Override
@@ -243,18 +171,6 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
         return false;
     }
 
-    //saving the name to local storage
-    private void saveNameToLocalStorage(String name,String email,String contactno, int status) {
-        text1.setText("");
-        text2.setText("");
-        text3.setText("");
-
-
-        db.addName(name,email,contactno,status);
-        R3Name n = new R3Name(name,email,contactno,status);
-        names.add(n);
-        refreshList();
-    }
 
     @Override
     public void onClick(View view) {

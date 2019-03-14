@@ -33,28 +33,19 @@ import java.util.Map;
 public class DMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/saveName.php";
+    public static final String URL_SAVE_NAME = "http://192.168.10.100/REAL/saveName.php";
     //public static final String URL_SAVE_NAME = "http://172.30.6.87/REAL/saveName.php";
-    //1 means data is synced and 0 means data is not synced
-    public static final int NAME_SYNCED_WITH_SERVER = 1;
-    public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
-    public static final String DATA_SAVED_BROADCAST = "net.simplifiedcoding.datasaved";
+
 
 
     // private EditText editTextEmail;
     //database helper object
-    private DDatabaseHelper db;
+
     //View objects
     private Button buttonSave;
     private EditText editTextName, editTextEmail, editTextNumber;
     private ListView listViewNames;
     //List to store all the names
-    private List<DName> names;
-    //Broadcast receiver to know the sync status
-    private BroadcastReceiver broadcastReceiver;
-
-    //adapterobject for list view
-    private DNameAdapter nameAdapter;
 
 
     @Override
@@ -62,11 +53,6 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dactivity_main);
 
-        registerReceiver(new DNetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-
-        //initializing views and objects
-        db = new DDatabaseHelper(this);
-        names = new ArrayList<>();
 
         buttonSave = findViewById(R.id.buttonSave);
         editTextName = findViewById(R.id.editTextName);
@@ -78,57 +64,9 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
         buttonSave.setOnClickListener(this);
 
 
-        //calling the method to load all the stored names
-        loadNames();
-
-        //the broadcast receiver to update sync status
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                //loading the names again
-                loadNames();
-            }
-        };
-
-        //registering the broadcast receiver to update sync status
-        registerReceiver(broadcastReceiver, new IntentFilter(DATA_SAVED_BROADCAST));
     }
 
-    /*
-     * this method will
-     * load the names from the database
-     * with updated sync status
-     * */
-    private void loadNames() {
-        names.clear();
-        Cursor cursor = db.getNames();
-        if (cursor.moveToFirst()) {
-            do {
-                DName name = new DName(
-                        cursor.getString(cursor.getColumnIndex(DDatabaseHelper.COLUMN_NAME)),
-                        cursor.getString(cursor.getColumnIndex(DDatabaseHelper.COLUMN_EMAIL)),
-                        cursor.getString(cursor.getColumnIndex(DDatabaseHelper.COLUMN_CONTACTNO)),
-                        cursor.getInt(cursor.getColumnIndex(DDatabaseHelper.COLUMN_STATUS))
-                );
-                names.add(name);
-            } while (cursor.moveToNext());
-        }
 
-        nameAdapter = new DNameAdapter(this, R.layout.dnames, names);
-        listViewNames.setAdapter(nameAdapter);
-    }
-
-    /*
-     * this method will simply refresh the list
-     * */
-    private void refreshList() {
-        nameAdapter.notifyDataSetChanged();
-    }
-
-    /*
-     * this method is saving the name to ther server
-     * */
     private void saveNameToServer() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
@@ -174,13 +112,9 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (!obj.getBoolean("error")) {
-                                //if there is a success
-                                //storing the name to sqlite with status synced
-                                saveNameToLocalStorage(name, email, contactno, NAME_SYNCED_WITH_SERVER);
+
                             } else {
-                                //if there is some error
-                                //saving the name to sqlite with status unsynced
-                                saveNameToLocalStorage(name, email, contactno, NAME_NOT_SYNCED_WITH_SERVER);
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -192,8 +126,7 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
                         //on error storing the name to sqlite with status unsynced
-                        saveNameToLocalStorage(name, email, contactno, NAME_NOT_SYNCED_WITH_SERVER);
-                    }
+                        }
                 }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -211,24 +144,9 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    //saving the name to local storage
-    private void saveNameToLocalStorage(String name, String email, String contactno, int status) {
-        editTextName.setText("");
-        editTextEmail.setText("");
-        editTextNumber.setText("");
-
-
-        db.addName(name, email, contactno, status);
-        DName n = new DName(name, email, contactno, status);
-        names.add(n);
-        refreshList();
-    }
 
     @Override
     public void onClick(View view) {
-
-
-
 
         saveNameToServer();
 
