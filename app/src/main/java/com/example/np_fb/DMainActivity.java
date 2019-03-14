@@ -34,7 +34,6 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
 
     //ipv4 local host address
     public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/saveName.php";
-    //public static final String URL_SAVE_NAME = "http://172.30.6.87/REAL/saveName.php";
     //1 means data is synced and 0 means data is not synced
     public static final int NAME_SYNCED_WITH_SERVER = 1;
     public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;

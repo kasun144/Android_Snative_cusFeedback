@@ -38,7 +38,6 @@ public class TenMainActivity extends AppCompatActivity implements View.OnClickLi
 
     //ipv4 local host address
     public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/tenrate.php";
-    //public static final String URL_SAVE_NAME = "http://172.30.6.87/REAL/tenrate.php";
 
     //database helper object
     private TenDatabaseHelper db;
