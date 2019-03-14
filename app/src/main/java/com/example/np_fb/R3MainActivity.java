@@ -29,11 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class R3MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://220.247.222.131/real/rate3.php";
+    public static final String URL_SAVE_NAME = "http://192.168.10.100/real/rate3.php";
 
     //database helper object
     private R3DatabaseHelper db;
@@ -184,6 +186,16 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Saving...");
         progressDialog.show();
+
+
+        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            public void run() {
+                progressDialog.dismiss(); // when the task active then close the dialog
+                t.cancel(); // also just top the timer thread, otherwise, you may receive a crash report
+            }
+        }, 5000);
+
 
         Intent intent = new Intent(R3MainActivity.this,TenMainActivity.class);
         startActivity(intent);

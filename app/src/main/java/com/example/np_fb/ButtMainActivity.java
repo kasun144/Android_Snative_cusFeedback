@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ButtMainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,8 +37,8 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
      * make sure you are using the ip instead of localhost
      * it will not work if you are using localhost
      * */
-    public static final String URL_SAVE_NAME = "http://220.247.222.131/real/radio.php";
-  //  public static final String URL_SAVE_NAME = "http://192.168.1.4/Real/radio.php";
+    public static final String URL_SAVE_NAME = "http://192.168.10.100/real/buttons.php";
+  //  public static final String URL_SAVE_NAME = "http://192.168.1.4/Real/buttons.php";
 
     //database helper object
     private ButtDatabaseHelper db;
@@ -143,6 +145,14 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Saving...");
         progressDialog.show();
+
+        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            public void run() {
+                progressDialog.dismiss(); // when the task active then close the dialog
+                t.cancel(); // also just top the timer thread, otherwise, you may receive a crash report
+            }
+        }, 5000);
 
 
         Intent intent = new Intent(ButtMainActivity.this,RMainActivity.class);

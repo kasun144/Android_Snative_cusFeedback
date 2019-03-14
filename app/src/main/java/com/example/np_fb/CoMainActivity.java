@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CoMainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,7 +36,7 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
      * make sure you are using the ip instead of localhost
      * it will not work if you are using localhost
      * */
-    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/comment.php";
+    public static final String URL_SAVE_NAME = "http://192.168.10.100/REAL/comment.php";
 
     //database helper object
     private CoDatabaseHelper db;
@@ -131,6 +133,14 @@ public class CoMainActivity extends AppCompatActivity implements View.OnClickLis
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Saving...");
         progressDialog.show();
+
+        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            public void run() {
+                progressDialog.dismiss(); // when the task active then close the dialog
+                t.cancel(); // also just top the timer thread, otherwise, you may receive a crash report
+            }
+        }, 5000);
 
         Intent intent = new Intent(CoMainActivity.this,R3MainActivity.class);
         startActivity(intent);

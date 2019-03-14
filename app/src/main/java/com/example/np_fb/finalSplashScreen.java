@@ -21,37 +21,18 @@ public class finalSplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_two);
 
-        new Handler().postDelayed(new Runnable() {
-
-
-            @Override
-            public void run() {
-                // This method will be executed once the timer is over
-                // Start your app main activity
-              /*  Intent i = new Intent(finalSplashScreen.this,finalSplashScreen.class);
-                startActivity(i);
-
-
-*/
                 // close this activity
                 buttonhome = findViewById(R.id.home);
                 buttonhome.setOnClickListener( new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        // TODO Auto-generated method stub
                         Intent i = new Intent(finalSplashScreen.this,SplashScreen.class);
                         startActivity(i);
 
 
-
                     }
                 });
-                //finish();
-
-            }
-        }, SPLASH_TIME_OUT);
-
 
 
 

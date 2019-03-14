@@ -29,11 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://220.247.222.131/REAL/saveName.php";
+    public static final String URL_SAVE_NAME = "http://192.168.10.100/REAL/saveName.php";
     //1 means data is synced and 0 means data is not synced
     public static final int NAME_SYNCED_WITH_SERVER = 1;
     public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
@@ -158,6 +160,14 @@ public class DMainActivity extends AppCompatActivity implements View.OnClickList
             //final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Saving...");
             progressDialog.show();
+
+            final Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                public void run() {
+                    progressDialog.dismiss(); // when the task active then close the dialog
+                    t.cancel(); // also just top the timer thread, otherwise, you may receive a crash report
+                }
+            }, 5000);
 
             Intent intent = new Intent(DMainActivity.this,finalSplashScreen.class);
             startActivity(intent);
