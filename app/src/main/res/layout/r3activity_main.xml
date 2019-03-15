@@ -76,7 +76,7 @@
                 android:layout_gravity="right"
                 android:text="Rating"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="gone"/>
+               />
 
 
         </LinearLayout>
@@ -118,7 +118,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Rating"
-                android:visibility="gone"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
@@ -158,11 +157,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rating"
-                android:visibility="gone"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
-d
+
 
         <Button
             android:id="@+id/buttonSave"

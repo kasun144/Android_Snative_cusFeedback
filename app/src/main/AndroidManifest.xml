@@ -33,18 +33,5 @@
         <activity android:name=".finalSplashScreen"></activity>
 
 
-
-
-        <receiver android:name=".DNetworkStateChecker">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".ButtNetworkStateChecker">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
     </application>
 </manifest>

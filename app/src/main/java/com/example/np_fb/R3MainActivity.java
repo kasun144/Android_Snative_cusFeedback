@@ -1,110 +1,56 @@
 package com.example.np_fb;
 
 
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.os.Bundle;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class R3MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class R3MainActivity extends AppCompatActivity {
 
-    //ipv4 local host address
-    public static final String URL_SAVE_NAME = "http://192.168.10.100/real/rate3.php";
-
-    //database helper object
-    private R3DatabaseHelper db;
-
-    //View objects
-    private Button buttonSave;
-    private TextView text1,text2,text3;
-    private RatingBar rating1,rating2,rating3;
-
-
-
-    // private EditText editTextEmail;
-
-    private ListView listViewNames;
-
-    //List to store all the names
-    private List<R3Name> names;
-
-    //1 means data is synced and 0 means data is not synced
-    public static final int NAME_SYNCED_WITH_SERVER = 1;
-    public static final int NAME_NOT_SYNCED_WITH_SERVER = 0;
-
-
-    public static final String DATA_SAVED_BROADCAST = "net.simplifiedcoding.datasaved";
-
-
-
-
-    //Broadcast receiver to know the sync status
-    private BroadcastReceiver broadcastReceiver;
-
-    //adapterobject for list view
-    private R3NameAdapter nameAdapter;
-
-
-
-
+    String ServerURL =  "http://220.247.222.131/REAL/rate3.php" ;
+    RatingBar rating1,rating2,rating3;
+    TextView  name, email,contactno ;
+    Button button;
+    String TempName, TempEmail ,Tempontactno ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.r3activity_main);
 
-        registerReceiver(new R3NetworkStateChecker(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        rating1 = (RatingBar) findViewById(R.id.ratingBar1);
+        rating2 = (RatingBar) findViewById(R.id.ratingBar2);
+        rating3= (RatingBar) findViewById(R.id.ratingBar3);
 
-        //initializing views and objects
-        db = new R3DatabaseHelper(this);
-        names = new ArrayList<>();
+        name = (TextView) findViewById(R.id.textView1);
+        email = (TextView) findViewById(R.id.textView2);
+        contactno = (TextView) findViewById(R.id.textView3);
 
-        buttonSave = findViewById(R.id.buttonSave);
-        //editTextName = findViewById(R.id.editTextName);
-       // editTextEmail= findViewById(R.id.editTextEmail);
-       // editTextNumber = findViewById(R.id.editTextNumber);
-        listViewNames = findViewById(R.id.listViewNames);
-        rating1 = findViewById(R.id.ratingBar1);
-        rating2 = findViewById(R.id.ratingBar2);
-        rating3= findViewById(R.id.ratingBar3);
-
-        text1 = findViewById(R.id.textView1);
-        text2 = findViewById(R.id.textView2);
-        text3 = findViewById(R.id.textView3);
-
-        //adding click listener to button
-        buttonSave.setOnClickListener(this);
+        button = (Button)findViewById(R.id.buttonSave);
 
         rating1.setOnRatingBarChangeListener(
                 new RatingBar.OnRatingBarChangeListener() {
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                        text1.setText(String.valueOf(rating));
+                        name.setText(String.valueOf(rating));
                     }
                 }
         );
@@ -113,7 +59,7 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
                 new RatingBar.OnRatingBarChangeListener() {
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                        text2.setText(String.valueOf(rating));
+                        email.setText(String.valueOf(rating));
                     }
                 }
         );
@@ -122,7 +68,7 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
                 new RatingBar.OnRatingBarChangeListener() {
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                        text3.setText(String.valueOf(rating));
+                        contactno.setText(String.valueOf(rating));
                     }
                 }
         );
@@ -130,148 +76,83 @@ public class R3MainActivity extends AppCompatActivity implements View.OnClickLis
 
 
 
-
-        //calling the method to load all the stored names
-        loadNames();
-
-        //the broadcast receiver to update sync status
-        broadcastReceiver = new BroadcastReceiver() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onReceive(Context context, Intent intent) {
+            public void onClick(View view) {
 
-                //loading the names again
-                loadNames();
+                GetData();
+
+                //InsertData(TempName, TempEmail);
+                InsertData(TempName, TempEmail, Tempontactno);
+
             }
-        };
-
-        //registering the broadcast receiver to update sync status
-        registerReceiver(broadcastReceiver, new IntentFilter(DATA_SAVED_BROADCAST));
+        });
     }
 
-    /*
-     * this method will
-     * load the names from the database
-     * with updated sync status
-     * */
-    private void loadNames() {
-        names.clear();
-        Cursor cursor = db.getNames();
-        if (cursor.moveToFirst()) {
-            do {
-                R3Name name = new R3Name(
-                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_NAME)),
-                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_EMAIL)),
-                        cursor.getString(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_CONTACTNO)),
-                        cursor.getInt(cursor.getColumnIndex(R3DatabaseHelper.COLUMN_STATUS))
-                );
-                names.add(name);
-            } while (cursor.moveToNext());
+    public void GetData(){
+
+        TempName = name.getText().toString();
+        TempEmail = email.getText().toString();
+        Tempontactno = contactno.getText().toString();
+
+        //TempEmail = email.getText().toString();
+
+    }
+
+    public void InsertData(final String name,final String email,final String contactno){
+
+        class SendPostReqAsyncTask extends AsyncTask<String, Void, String> {
+            @Override
+            protected String doInBackground(String... params) {
+
+                String NameHolder = name ;
+                String EmailHolder = email ;
+                String ContactnoHolder = contactno ;
+                // String EmailHolder = email ;
+
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
+                nameValuePairs.add(new BasicNameValuePair("name", NameHolder));
+                nameValuePairs.add(new BasicNameValuePair("email", EmailHolder));
+                nameValuePairs.add(new BasicNameValuePair("contactno", ContactnoHolder));
+
+                try {
+                    HttpClient httpClient = new DefaultHttpClient();
+
+                    HttpPost httpPost = new HttpPost(ServerURL);
+
+                    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                    HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                    HttpEntity httpEntity = httpResponse.getEntity();
+
+
+                } catch (ClientProtocolException e) {
+
+                } catch (IOException e) {
+
+                }
+                return "Data Inserted Successfully";
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+
+                super.onPostExecute(result);
+
+                Toast.makeText(R3MainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(R3MainActivity.this,TenMainActivity.class);
+                startActivity(intent);
+
+
+            }
         }
 
-        nameAdapter = new R3NameAdapter(this, R.layout.r3names, names);
-        listViewNames.setAdapter(nameAdapter);
+        SendPostReqAsyncTask sendPostReqAsyncTask = new SendPostReqAsyncTask();
+
+        //sendPostReqAsyncTask.execute(name, email);
+        sendPostReqAsyncTask.execute(name,email,contactno);
     }
 
-    /*
-     * this method will simply refresh the list
-     * */
-    private void refreshList() {
-        nameAdapter.notifyDataSetChanged();
-    }
-
-    /*
-     * this method is saving the name to ther server
-     * */
-    private boolean saveNameToServer() {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Saving...");
-        progressDialog.show();
-
-
-        final Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            public void run() {
-                progressDialog.dismiss(); // when the task active then close the dialog
-                t.cancel(); // also just top the timer thread, otherwise, you may receive a crash report
-            }
-        }, 5000);
-
-
-        Intent intent = new Intent(R3MainActivity.this,TenMainActivity.class);
-        startActivity(intent);
-
-
-        //editTextName
-        final String name = text1.getText().toString().trim();
-        final String email = text2.getText().toString().trim();
-        final String contactno = text3.getText().toString().trim();
-
-
-
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_SAVE_NAME,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressDialog.dismiss();
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            if (!obj.getBoolean("error")) {
-                                //if there is a success
-                                //storing the name to sqlite with status synced
-                                saveNameToLocalStorage(name,email,contactno, NAME_SYNCED_WITH_SERVER);
-                            } else {
-                                //if there is some error
-                                //saving the name to sqlite with status unsynced
-                                saveNameToLocalStorage(name,email,contactno, NAME_NOT_SYNCED_WITH_SERVER);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-                        //on error storing the name to sqlite with status unsynced
-                        saveNameToLocalStorage(name,email,contactno,NAME_NOT_SYNCED_WITH_SERVER);
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("name", name);
-                params.put("email", email);
-                params.put("contactno", contactno);
-
-
-                return params;
-            }
-        };
-
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-        return false;
-    }
-
-    //saving the name to local storage
-    private void saveNameToLocalStorage(String name,String email,String contactno, int status) {
-        text1.setText("");
-        text2.setText("");
-        text3.setText("");
-
-
-        db.addName(name,email,contactno,status);
-        R3Name n = new R3Name(name,email,contactno,status);
-        names.add(n);
-        refreshList();
-    }
-
-    @Override
-    public void onClick(View view) {
-
-
-        saveNameToServer();
-
-    }
 }
