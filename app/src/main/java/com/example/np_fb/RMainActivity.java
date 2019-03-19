@@ -112,7 +112,7 @@ public class RMainActivity extends AppCompatActivity {
 
                 super.onPostExecute(result);
 
-                Toast.makeText(RMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+                //Toast.makeText(RMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(RMainActivity.this,CoMainActivity.class);
                 startActivity(intent);
 

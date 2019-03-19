@@ -97,7 +97,7 @@ public class CoMainActivity extends AppCompatActivity {
 
                 super.onPostExecute(result);
 
-                Toast.makeText(CoMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+              //  Toast.makeText(CoMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(CoMainActivity.this,R3MainActivity.class);
                 startActivity(intent);

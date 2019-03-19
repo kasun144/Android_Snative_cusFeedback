@@ -54,40 +54,38 @@ public class DMainActivity extends AppCompatActivity {
 
 
     public void GetData(){
-        boolean valid = true;
 
         TempName = name.getText().toString();
-
-        if (TextUtils.isEmpty(TempName)) {
-            name.setError("Required.");
-            name.requestFocus();
-            valid = false;
-        } else {
-            name.setError(null);
-        }
-
         TempEmail = email.getText().toString();
-
-        if (TextUtils.isEmpty(TempEmail)) {
-            email.setError("Required.");
-            email.requestFocus();
-            valid = false;
-        } else {
-            email.setError(null);
-        }
-
         TempContactno = contactno.getText().toString();
-        if (TextUtils.isEmpty(TempContactno)) {
-            contactno.setError("Required.");
-            contactno.requestFocus();
-            valid = false;
-        } else {
-            contactno.setError(null);
+
+
+
+        if (TempName.isEmpty()|| TempName.length() < 3){
+            name.setError("Please Enter Your Name");
+            name.requestFocus();
+
         }
+
+        if(TempContactno.isEmpty()){
+            contactno.setError("Enter Valid Mobile Number");
+            contactno.requestFocus();
+
+        }
+
+        if(TempEmail.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(TempEmail).matches()) {
+            email.setError("Enter A Valid Email Address");
+            email.requestFocus();
+        }
+        else{
+
+            Intent intent = new Intent(DMainActivity.this,finalSplashScreen.class);
+            startActivity(intent);
+
+        }
+
 
     }
-
-
     //public void InsertData(final String name, final String email){
     public void InsertData ( final String name, final String email, final String contactno ){
 
@@ -131,9 +129,10 @@ public class DMainActivity extends AppCompatActivity {
 
                 super.onPostExecute(result);
 
-                Toast.makeText(DMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(DMainActivity.this,finalSplashScreen.class);
-                startActivity(intent);
+                
+              //  Toast.makeText(DMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+                /*Intent intent = new Intent(DMainActivity.this,finalSplashScreen.class);
+                startActivity(intent);*/
 
 
             }

@@ -96,7 +96,7 @@ public class ButtMainActivity extends AppCompatActivity implements View.OnClickL
 
                 super.onPostExecute(result);
 
-                Toast.makeText(ButtMainActivity.this, "Data Submit Successfully", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ButtMainActivity.this, "Data Submit Successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ButtMainActivity.this,RMainActivity.class);
                 startActivity(intent);
 

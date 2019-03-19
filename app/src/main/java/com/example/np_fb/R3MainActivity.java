@@ -141,7 +141,7 @@ public class R3MainActivity extends AppCompatActivity {
 
                 super.onPostExecute(result);
 
-                Toast.makeText(R3MainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+               // Toast.makeText(R3MainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(R3MainActivity.this,TenMainActivity.class);
                 startActivity(intent);
 

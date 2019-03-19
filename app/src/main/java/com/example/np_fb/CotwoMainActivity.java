@@ -104,7 +104,7 @@ public class CotwoMainActivity extends AppCompatActivity {
 
                 super.onPostExecute(result);
 
-                Toast.makeText(CotwoMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
+              //  Toast.makeText(CotwoMainActivity.this, "Data Submit Successfully", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(CotwoMainActivity.this,DMainActivity.class);
                 startActivity(intent);
