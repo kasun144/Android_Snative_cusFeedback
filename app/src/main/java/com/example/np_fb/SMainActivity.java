@@ -28,7 +28,7 @@ import java.util.TimerTask;
 
 public class SMainActivity extends AppCompatActivity {
 
-    String ServerURL =  "http://220.247.222.131/REAL/location.php" ;
+   String ServerURL =  "http://220.247.222.131/REAL/location.php" ;
     Spinner name, email ;
     Button button;
     String TempName, TempEmail ;
