@@ -28,11 +28,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
  $email =$_POST['email'];
  $contactno =$_POST['contactno'];
 
-
  echo $_SESSION["location_id"];
 	
  $lid = $_SESSION['location_id'];
- 
  
  //creating a statement to insert to database 
 

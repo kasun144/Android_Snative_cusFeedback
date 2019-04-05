@@ -32,6 +32,7 @@ import java.util.TimerTask;
 
 public class SMainActivity extends AppCompatActivity {
 
+    //220.247.222.131
    String ServerURL =  "http://220.247.222.131/REAL/location.php" ;
     Spinner name, email ;
     Button button;
@@ -56,6 +57,7 @@ public class SMainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(SMainActivity.this,ButtMainActivity.class);
                 startActivity(intent);
+
 
             }
         });
