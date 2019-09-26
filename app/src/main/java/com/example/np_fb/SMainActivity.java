@@ -50,7 +50,7 @@ public class SMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                GetData();
+                GetData();//method
 
                 //InsertData(TempName, TempEmail);
                 InsertData(TempName);
